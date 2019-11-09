@@ -1,6 +1,7 @@
-var todoList = [], formEl, listEl;
-const inputName = 'name';
-const lsKey = 'ITEMS';
+var tasks = [], formEl, listEl;
+const inputValueName = 'value';
+const inputDateName = 'date';
+const lsKey = 'TASKS';
 
 function init() {
   formEl = document.getElementById("myForm");
@@ -9,35 +10,46 @@ function init() {
   formEl.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const input = formEl.elements[inputName];
-    addTodo(input.value);
+    const inputValue = formEl.elements[inputValueName];
+    const inputDate = formEl.elements[inputDateName];
+    addTask({
+      value: inputValue.value,
+      date: inputDate.value
+    });
     // reset input
-    input.value = null;
-    input.focus();
+    inputValue.value = null;
+    inputDate.value = null;
+    inputValue.focus();
   });
 
   // init value from localstorage
-  const lsTodoList = localStorage.getItem(lsKey);
-  if (lsTodoList) {
-    JSON.parse(lsTodoList).forEach(todo => {
-      addTodo(todo);
+  const lsTasks = localStorage.getItem(lsKey);
+  if (lsTasks) {
+    JSON.parse(lsTasks).forEach(task => {
+      addTask(task);
     })
   }
 }
 
-function addTodo(value) {
+function addTask(task) { // task: { value: string, date: string }
   // add to array and localstorage
-  todoList.push(value);
-  localStorage.setItem(lsKey, JSON.stringify(todoList));
-  console.log(todoList);
-  addHtmlElement(value);
+  tasks.push(task);
+  localStorage.setItem(lsKey, JSON.stringify(tasks));
+  console.log(tasks);
+  addHtmlElement(task);
 }
 
-function addHtmlElement(value) {
+function addHtmlElement(task) {
   // create html element
-  const listItem = document.createElement('li');
-  listItem.innerHTML = value;
-  listEl.appendChild(listItem);
+  const liEl = document.createElement('li');
+  liEl.innerHTML = task.value + ' ' + task.date;
+  const buttonEl = document.createElement('button');
+  buttonEl.innerHTML = 'Edit';
+  buttonEl.addEventListener('click', (ev) => {
+    window.location.href = 'edit.html';
+  });
+  liEl.appendChild(buttonEl);
+  listEl.appendChild(liEl);
 }
 
 window.onload = init;

@@ -4,14 +4,15 @@ const inputDateName = 'date';
 const lsKey = 'TASKS';
 
 function init() {
-  formEl = document.getElementById("myForm");
+  formEl = document.getElementById("addForm");
   listEl = document.getElementById("list");
+
+  const inputValue = formEl.elements[inputValueName];
+  const inputDate = formEl.elements[inputDateName];
 
   formEl.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const inputValue = formEl.elements[inputValueName];
-    const inputDate = formEl.elements[inputDateName];
     addTask({
       value: inputValue.value,
       date: inputDate.value
@@ -36,17 +37,17 @@ function addTask(task) { // task: { value: string, date: string }
   tasks.push(task);
   localStorage.setItem(lsKey, JSON.stringify(tasks));
   console.log(tasks);
-  addHtmlElement(task);
+  addHtmlElement(task, tasks.length - 1);
 }
 
-function addHtmlElement(task) {
+function addHtmlElement(task, index) {
   // create html element
   const liEl = document.createElement('li');
   liEl.innerHTML = task.value + ' ' + task.date;
   const buttonEl = document.createElement('button');
   buttonEl.innerHTML = 'Edit';
   buttonEl.addEventListener('click', (ev) => {
-    window.location.href = 'edit.html';
+    window.location.href = `edit.html#${index}`;
   });
   liEl.appendChild(buttonEl);
   listEl.appendChild(liEl);
